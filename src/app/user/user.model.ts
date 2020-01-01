@@ -13,8 +13,20 @@ export class User {
     private _token: string; 
     private _tokenExpirationDate: Date;
 
-    constructor() {
-
+    constructor(id: string,
+                email: string,
+                userName: string,
+                name: string,
+                category: string,
+                profilePic: string, tweets: Tweet[]) {
+                    
+        this.id = id;
+        this.email = email;
+        this.userName = userName;
+        this.name = name;
+        this.category = category;
+        this.profilePic = profilePic;
+        this.tweets = tweets;
     }
 
     get token(){

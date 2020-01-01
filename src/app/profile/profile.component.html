@@ -1,1 +1,33 @@
-<p>profile works!</p>
+<div class="row">
+    <div class="col-md-2" style="border: 3px solid blue;">
+        <div class="row" style="margin-top: 10px">
+            <img 
+                class="center-block" 
+                [src]= "user.profilePic"
+                alt="https://i.stack.imgur.com/34AD2.jpg"
+                width="128px">
+        </div>
+        <div class="row" style="padding-left: 6px; margin-top: 6px; padding-right: 6px;">
+            <div style="text-align: center;">
+                <h3>{{ user.userName }}</h3>
+            </div>
+            <div>
+                <li>Name: {{ user.name }}</li>
+                <li>E-mail: {{ user.email }}</li>
+                <li>{{ user.category }}</li>
+            </div>
+
+            <hr>
+
+            <div>
+                <p>Here will be the Date Filter for Tweets</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <app-tweet
+         *ngFor="let tweet of user.tweets;"
+         [tweet]="tweet">
+         </app-tweet>
+    </div>
+</div>

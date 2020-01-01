@@ -10,11 +10,11 @@ import { HeaderComponent } from './header/header.component';
 import { InternshipComponent } from './internship/internship.component';
 import { AdminComponent } from './admin/admin.component';
 import { TweetComponent } from './tweet/tweet.component';
-import { HistoryComponent } from './history/history.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { TweetPostComponent } from './tweet/tweet-post/tweet-post.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ProfileInfoComponent } from './profile/profile-info/profile-info.component';
 
 @NgModule({
   declarations: [
@@ -25,10 +25,10 @@ import { ProfileComponent } from './profile/profile.component';
     InternshipComponent,
     AdminComponent,
     TweetComponent,
-    HistoryComponent,
     HomeComponent,
     TweetPostComponent,
-    ProfileComponent
+    ProfileComponent,
+    ProfileInfoComponent
   ],
   imports: [
     BrowserModule,

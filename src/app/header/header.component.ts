@@ -7,9 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
+  currentUser: string;
+
   constructor() { }
 
   ngOnInit() {
+    this.currentUser = "1";
   }
 
 }

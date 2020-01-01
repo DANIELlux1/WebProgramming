@@ -1,1 +1,16 @@
-<p>tweet works!</p>
+<div style="border: 1px solid gray;
+            padding-bottom: 10px;
+            margin-bottom: 16px;">
+    <div style="padding-left: 6px;">
+        <h4>{{ tweet.owner }} | {{ tweet.internship }}</h4>
+        <hr>
+        <p>{{ tweet.message }}</p>
+    </div>
+    <div *ngIf="tweet.imgPath" style="margin-top: 6px;">
+        <img 
+            [src]="tweet.imgPath" 
+            class="center-block" 
+            alt="nothing"
+            width="300px">
+    </div>
+</div>
