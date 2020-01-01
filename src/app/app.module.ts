@@ -13,6 +13,8 @@ import { TweetComponent } from './tweet/tweet.component';
 import { HistoryComponent } from './history/history.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
+import { TweetPostComponent } from './tweet/tweet-post/tweet-post.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { HomeComponent } from './home/home.component';
     AdminComponent,
     TweetComponent,
     HistoryComponent,
-    HomeComponent
+    HomeComponent,
+    TweetPostComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
