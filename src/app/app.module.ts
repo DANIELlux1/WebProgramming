@@ -14,7 +14,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { TweetPostComponent } from './tweet/tweet-post/tweet-post.component';
 import { ProfileComponent } from './profile/profile.component';
-import { ProfileInfoComponent } from './profile/profile-info/profile-info.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +27,6 @@ import { ProfileInfoComponent } from './profile/profile-info/profile-info.compon
     HomeComponent,
     TweetPostComponent,
     ProfileComponent,
-    ProfileInfoComponent
   ],
   imports: [
     BrowserModule,

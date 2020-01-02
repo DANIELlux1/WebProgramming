@@ -4,6 +4,7 @@ export class User {
 
     public email: string;
     public id: string;
+    public password: string;
     public userName: string;
     public name: string;
     public category: string;
@@ -15,10 +16,13 @@ export class User {
 
     constructor(id: string,
                 email: string,
+                password: string,
                 userName: string,
                 name: string,
                 category: string,
-                profilePic: string, tweets: Tweet[]) {
+                profilePic: string,
+                tweets: Tweet[],
+                internships?: string[]) {
                     
         this.id = id;
         this.email = email;
@@ -27,6 +31,8 @@ export class User {
         this.category = category;
         this.profilePic = profilePic;
         this.tweets = tweets;
+        this.internshipIDs = internships;
+        this.password = password;
     }
 
     get token(){

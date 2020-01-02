@@ -9,5 +9,21 @@ export class Internship{
     public academicSupervisorID: string;
 
 
-    constructor(){}
+    constructor(id: string,
+                title: string,
+                description: string,
+                academicSupervisorID: string,
+                localSupervisor?: string[],
+                studentIDs?: string[],
+                profilePic?: string
+    ){
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.academicSupervisorID = academicSupervisorID;
+        this.localSupervisorIDs = localSupervisor;
+        this.studentIDs = studentIDs;
+        this.profilePic = profilePic;
+    }
 }
+
