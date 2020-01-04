@@ -1,83 +1,68 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { catchError, tap } from 'rxjs/operators';
-import { pipe, throwError, BehaviorSubject } from 'rxjs';
-import { User } from '../user/user.model';
+import { pipe, throwError, BehaviorSubject, Subject } from 'rxjs';
+import * as shajs from 'sha.js';
+import { DataStorageService } from '../shared/data-storage.service';
 
-
-export interface AuthResponseData{
-    kind: string;
-    idToken: string;
-    email: string;
-    refreshToken: string;
-    expiresIn: string;
-    localId: string;
-    registered?: boolean;
-}
 
 @Injectable({providedIn: "root"})
 export class AuthService{
 
-    user = new BehaviorSubject<any>(null);
+    inAuth = new Subject<boolean>();
+    error = new Subject<{error}>();
+    isAdmin = new Subject<boolean>();
+    isLoggedIn = new Subject<boolean>();
 
-    constructor(private http: HttpClient, private router:Router){}
+    enterAuth()
+    {
+        this.inAuth.next(true);
+        this.isAdmin.next(false);
+    }
 
-    signup(email: string, password: string){
-        return this.http.post<AuthResponseData>(
-            "",
-            {
-                email, 
-                password,
-                returnSecureToken: true 
+    constructor(private http: HttpClient, private router:Router, private dataS: DataStorageService){}
+
+    gen(){
+        let chars = "abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        let x = ""
+
+        for (let i = 0; i < 16; i++)
+        {
+            x += chars.charAt(Math.random()*chars.length);
+        }
+
+        return x;
+    }
+
+    login(userName: string, pw: string){
+
+        let x = this.gen();
+        console.log(x);
+
+        this.http.get<{date}>("http://localhost:3000/login?userName=" + userName + "&x=" + x).subscribe(d => {
+
+            console.log(d.date)
+            let password = shajs("sha256").update(x + pw + d.date).digest('hex');
+
+            this.http.post<{token, error, special}>("http://localhost:3000/login", {userName, password}).subscribe( (data) => {
+                if(data.error){
+                    console.log(data.error)
+                    console.log("error")
+                }
+ 
+                else{
+                    if(data.special)
+                    {
+                        this.isAdmin.next(true);
+                    }
+                    this.isLoggedIn.next(true);
+                    this.dataS.setToken(data.token);
+                    this.inAuth.next(false);
+                    this.router.navigate(["/home"]);
+                }
             }
-        ).pipe(catchError(this.handleError), tap(resData => {
-            this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn);
-        }));
+            )
+        })
     }
 
-    login(email: string, password: string){
-        return this.http.post<AuthResponseData>(
-            "",
-            {
-                email, 
-                password,
-                returnSecureToken: true 
-            }
-        ).pipe(catchError(this.handleError), tap(resData => {
-            this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn);
-        }));
-    }
-
-    private handleError(errorRes: HttpErrorResponse) {
-        let errorMessage = "An unknown error occurred!"
-            if(!errorRes.error || !errorRes.error.error){
-                return throwError(errorMessage);
-            }
-            switch(errorRes.error.error.message){
-                case "EMAIL_EXISTS":
-                   errorMessage = "This email exists already.";
-                   break;
-                case "EMAIL_NOT_FOUND":
-                    errorMessage = "Email or Password wrong.";
-                    break;
-                case "INVALID_PASSWORD":
-                    errorMessage = "Email or Password wrong!";
-                    break;
-            }
-            return throwError(errorMessage);
-    }
-
-    private handleAuthentication(email: string, userId: string, token: string, expiresIn: number){
-        
-        const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-        //const user = new User();
-
-        //this.user.next(user);
-    }
-
-    logout(){
-        this.user.next(null);
-        this.router.navigate(["/auth"]);
-    }
 }

@@ -1,1 +1,13 @@
-<p>join-internship works!</p>
+<div *ngIf = "!isLoading">
+    <app-internship
+     *ngFor="let internship of internships;"
+     [internship]="internship">
+     </app-internship>
+</div>
+
+<!-- <div class="col-md-9">
+    <app-tweet
+     *ngFor="let tweet of tweets;"
+     [tweet]="tweet">
+     </app-tweet>
+</div> -->

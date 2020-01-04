@@ -1,0 +1,15 @@
+<div class="row" *ngIf="user">
+    <div 
+        class="col-md-10" 
+        style="border: 1px solid black; padding-left: 25px;">
+        <div class="row">
+            <h3>{{ user.userName }}</h3>
+        </div>
+    </div>
+    <div class="col-md-2" *ngIf="user.deactivated">
+        <button class="btn btn-success">+</button>
+    </div>
+    <div class="col-md-2" *ngIf="!user.deactivated">
+        <button class="btn btn-danger">x</button>
+    </div>
+</div>

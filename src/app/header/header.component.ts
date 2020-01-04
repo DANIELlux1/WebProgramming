@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { DataStorageService } from '../shared/data-storage.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -7,12 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  currentUser: string;
+  show = true;
+  admin = false;
+  isLoggedin = false;
 
-  constructor() { }
+  constructor(private authS: AuthService) { }
 
   ngOnInit() {
-    this.currentUser = "tester1";
+    this.authS.inAuth.subscribe((auth) => {
+      this.show = !auth
+    })
+    this.authS.isAdmin.subscribe((isAdmin)=>{
+      this.admin = isAdmin;
+    })
+    this.authS.isLoggedIn.subscribe((log) => {
+      this.isLoggedin = log;
+    })
   }
-
 }

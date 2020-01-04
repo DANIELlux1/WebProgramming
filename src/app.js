@@ -1,9 +1,13 @@
 const express = require("express")
 const mysql   = require('mysql')
 const cors    = require('cors')
+const jwt = require('jsonwebtoken')
+const shajs = require('sha.js')
 
 const app = express()
 const port = process.env.PORT || 3000
+
+const key = new Map()
 
 app.use(express.json())
 app.use(cors())
@@ -14,6 +18,64 @@ const connection = mysql.createConnection({
     user     : 'root',
     password : 'root',
     database : 'twitter'
+})
+
+app.get("/login", (req, res) => {
+    x = req.query.x
+    user = req.query.userName
+    date = Date.now()
+    key[user] = {x, date}
+    console.log(date)
+    res.send({date})
+})
+
+app.post("/login", async (req, res) => {
+
+    const userName = req.body.userName
+    const password = req.body.password
+    const token = jwt.sign({_id: userName}, "fakeTwitter", {expiresIn: 60*10})
+
+    connection.query("SELECT password FROM user WHERE userName = '" + userName + "'", (err, r, f) => {
+        if(err)
+        {
+            res.send(err)
+        }
+        
+        let date = key[userName].date
+        let x = key[userName].x
+        let pw = ""
+        if(r[0] != undefined && r[0].password)
+        {
+            pw = r[0].password
+        }
+        let test = shajs("sha256").update(x + pw + date).digest('hex')
+
+        if(test === password)
+        {
+            connection.query("UPDATE user SET _token = '"+ token +"'  WHERE userName='"+ userName +"' AND password='"+r[0].password+"';",
+            (error, result, field) => {
+                if(error)
+                {
+                    res.send(error)
+                }
+                else{
+                    if(result.affectedRows === 1)
+                    {
+                        if(userName === "root")
+                        {
+                            return res.send({token,special:"is Admin."})
+                        }
+                        res.send({token})
+                    }
+                    else{
+                        res.send({error: "No such credentials were found."})
+                    }
+                }
+            })
+        }else{
+            res.send({error : "There was an Error with your credentials."})
+        }
+    })
 })
 
 app.get("/test", (req, res) => {
@@ -170,11 +232,12 @@ app.get("/tweet", (req, res) => {
 
 app.get("/users", (req, res) => {
 
-    const user = req.query.user
+    const token = req.query.token
+    console.log(token)
     let cond
-    if(user)
+    if(token)
     {
-        cond="WHERE userName = '" + user + "'"
+        cond="WHERE _token = '" + token + "'"
     }
     
     fetch("user", cond , req, res)
@@ -231,6 +294,20 @@ app.post("/tweet", (req, res) => {
         else
         {
             res.send(result)
+        }
+    })
+})
+
+app.patch("/logout", (req, res) => {
+    token = req.body.token
+    connection.query("UPDATE user SET _token = 'null' WHERE _token = '"+ token +"';", (error,result,field) => {
+        if(error)
+        {
+            res.send(error)
+        }
+        else
+        {
+            res.send({success: "Logout success."})
         }
     })
 })

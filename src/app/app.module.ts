@@ -16,6 +16,10 @@ import { TweetPostComponent } from './tweet/tweet-post/tweet-post.component';
 import { ProfileComponent } from './profile/profile.component';
 import { JoinInternshipComponent } from './internship/join-internship/join-internship.component';
 import { ApiDownComponent } from './error/api-down/api-down.component';
+import { ManageUserComponent } from './manage/manage-user/manage-user.component';
+import { ManageInternshipComponent } from './manage/manage-internship/manage-internship.component';
+import { InternshipItemComponent } from './manage/manage-internship/internship-item/internship-item.component';
+import { UserItemComponent } from './manage/manage-user/user-item/user-item.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +35,10 @@ import { ApiDownComponent } from './error/api-down/api-down.component';
     ProfileComponent,
     JoinInternshipComponent,
     ApiDownComponent,
+    ManageUserComponent,
+    ManageInternshipComponent,
+    InternshipItemComponent,
+    UserItemComponent,
   ],
   imports: [
     BrowserModule,

@@ -4,6 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Tweet } from '../tweet/tweet.model';
 import { DataStorageService } from '../shared/data-storage.service';
 import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -16,36 +17,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
   tweets: Tweet[];
   filteredTweets: Tweet[];
   loaded = false;
-  sub : Subscription;
+  subTweet : Subscription;
+  subUser : Subscription;
   error = false;
 
   constructor(private dataS: DataStorageService,
               private route: ActivatedRoute) { }
 
-  ngOnInit() {
-    this.sub = this.route.params.subscribe(
-      (params: Params) => {
-        let id = params["id"];
-        this.dataS.fetchUser(id).subscribe(data => {
-          this.user = (<User>data);
-          if(this.user)
-          {
-            this.dataS.fetchTweets(this.user.userName, "").subscribe(dataTweet => {
-              this.tweets = dataTweet;
-              this.loaded = true;
-            })
-          }
-          else
-          {
-            this.error = true;
-          }
-        })
-      }
-    )
+  ngOnInit(){
+    this.loaded = false;
+    this.subTweet = this.dataS.tweetKeeper.subscribe((tweets) => {
+      this.tweets = tweets;
+    })
+
+    this.subUser = this.dataS.userInfo.subscribe((user) => {
+      this.user = user;
+    })
+
+    this.dataS.loadProfile(this.dataS.getToken())
+    this.loaded=true;
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    this.subTweet.unsubscribe();
+    this.subUser.unsubscribe();
   }
 
 }

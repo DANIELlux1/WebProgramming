@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Internship } from '../internship.model';
+import { DataStorageService } from 'src/app/shared/data-storage.service';
 
 @Component({
   selector: 'app-join-internship',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class JoinInternshipComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dataS: DataStorageService) { }
+
+  internships : Internship[];
+  isLoading = false;
 
   ngOnInit() {
+    this.isLoading = true;
+    /* this.dataS.fetchInternships().subscribe(data => {
+      this.internships = data;
+      this.isLoading = false
+    }) */
   }
 
 }

@@ -4,20 +4,23 @@ import { Internship } from '../internship/internship.model';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { User } from '../user/user.model';
-import { throwError } from 'rxjs';
+import { throwError, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({providedIn: "root"})
 export class DataStorageService{
 
-    private currentUser: string;
+    private token: string;
 
-    setUser(user: string){
-        this.currentUser = user;
+    public tweetKeeper= new Subject<Tweet[]>();
+    public userInfo= new Subject<User>();
+
+    setToken(token: string){
+        this.token = token;
     }
 
-    getUser(){
-        return this.currentUser;
+    getToken(){
+        return this.token;
     }
 
     constructor(private http: HttpClient, private router: Router) {}
@@ -28,61 +31,54 @@ export class DataStorageService{
 
     ********************************************/
 
-    fetchTweets(subject: string, type: string){
+    loadProfile(token: string){
 
-        let querry = ""
+        this.http.get<User[]>("http://localhost:3000/users?token=" + token)
+        .subscribe(data => {
+            console.log(data[0])
+            if(data[0])
+            {
+                this.userInfo.next(data[0])
+                this.http.get<Tweet[]>("http://localhost:3000/tweet?user=" + data[0].userName).subscribe( (tweets) => {
+                    console.log(tweets)
+                    this.tweetKeeper.next(tweets);
+                })
+            }
+        })
+        
+    }
 
-        if(subject)
-        {
-            querry = "?user="+subject
-        }
 
-        return this.http.get("http://localhost:3000/tweet"+querry
+    fetchInternships(){
+        return this.http.get("http://localhost:3000/internship"
         ).pipe(map((data) => {
-            const twitterPosts: Tweet[] = [];
+            const internships: Internship[] = [];
             for(const value in data)
             {
-                twitterPosts.push({...data[value]});
+                internships.push({...data[value]});
             }
-
-            return twitterPosts;
+            console.log(internships)
+            return internships;
         }), catchError(errorRes => {
             this.router.navigate(["/error"])
             return throwError(errorRes);
         }));
     }
 
-    fetchUser(user: string)
-    {
-        let query = "";
-        if(user)
-        {
-            query = "users?user="+user;
-        }
-        return this.http.get("http://localhost:3000/"+query
-        ).pipe(map((data) => {
-            const users: User[] = [];
-            for(const value in data)
-            {
-                users.push({...data[value]});
-            }
+    joinInternship(table: string, userName: string, internship: string){
+        this.http.post("http://localhost:3000/join",{
+            table,
+            userName,
+            internship
+        }).subscribe()
+    }
 
-            if(users.length == 1)
-            {
-                return users[0];
-            }
-            else if(users.length === 0)
-            {
-                return undefined;
-            }
-            else
-            {
-                return users;
-            }
-        }), catchError(errorRes => {
-            this.router.navigate(["/error"])
-            return throwError(errorRes);
-        }));
+    joinInternshipV2(){
+        this.http.post("http://localhost:3000/join",{
+            table : "test",
+            userName : "test",
+            internship : "test"
+        }).subscribe()
     }
 
     

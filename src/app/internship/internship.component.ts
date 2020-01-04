@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Internship } from './internship.model';
 import { DataStorageService } from '../shared/data-storage.service';
 
 @Component({
@@ -8,9 +9,14 @@ import { DataStorageService } from '../shared/data-storage.service';
 })
 export class InternshipComponent implements OnInit {
 
-  constructor(private dataC: DataStorageService) { }
+  constructor(private dataS: DataStorageService) { }
 
-  ngOnInit() {
+  @Input() internship : Internship;
+
+  ngOnInit() {}
+
+  onJoin(){
+    this.dataS.joinInternshipV2()
   }
 
 }
