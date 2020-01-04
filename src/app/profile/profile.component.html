@@ -1,10 +1,13 @@
-<div class="row">
+<div class="alert alert-danger" *ngIf="error">
+    <h3>Sorry couldn't find the user.</h3>
+</div>
+<div class="row" *ngIf="loaded && !error">
     <div class="col-md-2" style="border: 3px solid blue;">
         <div class="row" style="margin-top: 10px">
             <img 
                 class="center-block" 
                 [src]= "user.profilePic"
-                alt="https://i.stack.imgur.com/34AD2.jpg"
+                alt="Something went wrong x.x"
                 width="128px">
         </div>
         <div class="row" style="padding-left: 6px; margin-top: 6px; padding-right: 6px;">
@@ -26,7 +29,7 @@
     </div>
     <div class="col-md-9">
         <app-tweet
-         *ngFor="let tweet of user.tweets;"
+         *ngFor="let tweet of tweets;"
          [tweet]="tweet">
          </app-tweet>
     </div>

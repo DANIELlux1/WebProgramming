@@ -1,14 +1,17 @@
 export class Tweet {
 
-    public owner: string;
-    public internship: string;
+    public tweetID: number;
     public message: string;
     public imgPath: string;
+    public owner: string;
+    public internshipID: string;
+    public postDate: Date;
+    
 
     constructor(owner: string, internship: string, message: string, imgPath?:string){
         this.owner = owner;
         this.message = message;
         this.imgPath = imgPath;
-        this.internship = internship;
+        this.internshipID = internship;
     }
 }

@@ -14,6 +14,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { TweetPostComponent } from './tweet/tweet-post/tweet-post.component';
 import { ProfileComponent } from './profile/profile.component';
+import { JoinInternshipComponent } from './internship/join-internship/join-internship.component';
+import { ApiDownComponent } from './error/api-down/api-down.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { ProfileComponent } from './profile/profile.component';
     HomeComponent,
     TweetPostComponent,
     ProfileComponent,
+    JoinInternshipComponent,
+    ApiDownComponent,
   ],
   imports: [
     BrowserModule,

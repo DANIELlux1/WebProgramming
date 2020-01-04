@@ -12,7 +12,7 @@ export class HeaderComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.currentUser = "1";
+    this.currentUser = "tester1";
   }
 
 }

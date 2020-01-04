@@ -4,7 +4,7 @@ import { Internship } from './internship.model';
 @Injectable({providedIn: "root"})
 export class InternshipService{
 
-    private internships: Internship[] = [new Internship("BINFO",
+    /* private internships: Internship[] = [new Internship("BINFO",
                                                         "BINFO",
                                                         "Bachelor in Information Technology.",
                                                         "Tester2",
@@ -20,7 +20,7 @@ export class InternshipService{
                                                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1Qg0tNZr3PK20cbVRf0RrGPZtc7DevNyaHyTa4bf9L7EcOeNp&s")
 
 
-    ]
+    ] */
 
 
 }

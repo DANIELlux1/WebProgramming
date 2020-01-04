@@ -5,7 +5,7 @@ import { Tweet } from '../tweet/tweet.model';
 @Injectable({providedIn: "root"})
 export class UserService{
 
-    //id, email, userName, name, category, profilePic, tweets
+    /* //id, email, userName, name, category, profilePic, tweets
     private user: User[] = [new User("1",
                                      "test@TestBed.com",
                                      "123456",
@@ -77,5 +77,5 @@ export class UserService{
 
     getUsers(){
         return this.user;
-    }
+    } */
 }
