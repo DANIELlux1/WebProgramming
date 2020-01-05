@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataStorageService } from 'src/app/shared/data-storage.service';
 
 @Component({
   selector: 'app-tweet-post',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TweetPostComponent implements OnInit {
 
-  constructor() { }
+  constructor(dataS: DataStorageService) { }
+
+  Internships: string[];
 
   ngOnInit() {
   }

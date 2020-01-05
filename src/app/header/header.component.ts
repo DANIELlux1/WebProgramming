@@ -26,4 +26,8 @@ export class HeaderComponent implements OnInit {
       this.isLoggedin = log;
     })
   }
+
+  onLogout(){
+    this.authS.logout();
+  }
 }

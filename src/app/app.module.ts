@@ -20,6 +20,8 @@ import { ManageUserComponent } from './manage/manage-user/manage-user.component'
 import { ManageInternshipComponent } from './manage/manage-internship/manage-internship.component';
 import { InternshipItemComponent } from './manage/manage-internship/internship-item/internship-item.component';
 import { UserItemComponent } from './manage/manage-user/user-item/user-item.component';
+import { AddUserComponent } from './manage/manage-user/add-user/add-user.component';
+import { ManageComponent } from './manage/manage.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { UserItemComponent } from './manage/manage-user/user-item/user-item.comp
     ManageInternshipComponent,
     InternshipItemComponent,
     UserItemComponent,
+    AddUserComponent,
+    ManageComponent,
   ],
   imports: [
     BrowserModule,

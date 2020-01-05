@@ -1,13 +1,8 @@
-<div *ngIf = "!isLoading">
+<div *ngIf = "!isLoading && token">
     <app-internship
-     *ngFor="let internship of internships;"
-     [internship]="internship">
+     *ngFor="let internship of modifiedInternships;"
+     [internship]="internship.internship"
+     [isStudent]= "internship.isStudent"
+     >
      </app-internship>
 </div>
-
-<!-- <div class="col-md-9">
-    <app-tweet
-     *ngFor="let tweet of tweets;"
-     [tweet]="tweet">
-     </app-tweet>
-</div> -->

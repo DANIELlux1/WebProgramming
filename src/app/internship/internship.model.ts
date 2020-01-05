@@ -5,6 +5,7 @@ export class Internship{
     public description: string;
     public profilePic: string;
     public academicSupervisor: string;
+    public localSupervisor: string;
 
 
      constructor(id: string,

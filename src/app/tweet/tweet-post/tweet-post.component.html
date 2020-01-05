@@ -1,67 +1,33 @@
 <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
-        <div class="alert alert-danger" *ngIf="error">
-            <p>{{ error }}</p>
-        </div>
-       <!--  <div *ngIf="isLoading" style="text-align: center;">
-            <app-loading-spinner></app-loading-spinner>
-        </div> -->
-        <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+        <form #postForm="ngForm" (ngSubmit)="onSubmit(postForm)">
             <div class="form-group">
-                <label for="user">User</label>
-                <input 
-                    type="user"
-                    id="user"
+                <label for="message">Message</label>
+                <textarea 
+                    type="message"
+                    id="message"
                     class="form-control"
                     ngModel
-                    name="user"
-                    required>
+                    name="message"
+                    required></textarea>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    class="form-control"
-                    ngModel
-                    name="password"
-                    required
-                    minlength="6">
-            </div>
-            <div class="form-group">
-                <label for="email">E-Mail</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    class="form-control"
-                    ngModel
-                    name="email"
-                    required>
-            </div>
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input 
-                    type="name" 
-                    id="name" 
-                    class="form-control"
-                    ngModel
-                    name="name"
-                    required>
+                <label for="internship">Internship</label>
+                <select [(ngModel)]="selectedValue" name="internship"
+                 required>
+                    <option 
+                        *ngFor="let internship of internships">
+                      {{internship}}
+                    </option>
+                </select>
             </div>
             <div>
                 <button 
                     class="btn btn-primary" 
                     type="submit" 
-                    [disabled]="!authForm.valid">
-                    {{ isLoginMode ? 'Login' : 'Sign Up' }}
+                    [disabled]="!postForm.valid">
+                    post
                 </button> 
-                    |
-                <button 
-                    class="btn btn-primary" 
-                    type="button" 
-                    (click) = "onSwitchMode()">
-                    Switch to {{ isLoginMode ? 'Sign Up' : 'Login' }}
-                </button>
             </div>
         </form>
     </div>

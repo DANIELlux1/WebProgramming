@@ -12,12 +12,20 @@ export class AuthService{
     inAuth = new Subject<boolean>();
     error = new Subject<{error}>();
     isAdmin = new Subject<boolean>();
+    isA: boolean;
     isLoggedIn = new Subject<boolean>();
+
+
+    getAdmin(){
+        return this.isA;
+    }
 
     enterAuth()
     {
+        this.isA = false;
         this.inAuth.next(true);
         this.isAdmin.next(false);
+        
     }
 
     constructor(private http: HttpClient, private router:Router, private dataS: DataStorageService){}
@@ -37,23 +45,21 @@ export class AuthService{
     login(userName: string, pw: string){
 
         let x = this.gen();
-        console.log(x);
 
         this.http.get<{date}>("http://localhost:3000/login?userName=" + userName + "&x=" + x).subscribe(d => {
 
-            console.log(d.date)
             let password = shajs("sha256").update(x + pw + d.date).digest('hex');
 
             this.http.post<{token, error, special}>("http://localhost:3000/login", {userName, password}).subscribe( (data) => {
                 if(data.error){
-                    console.log(data.error)
-                    console.log("error")
+
                 }
  
                 else{
                     if(data.special)
                     {
                         this.isAdmin.next(true);
+                        this.isA = true;
                     }
                     this.isLoggedIn.next(true);
                     this.dataS.setToken(data.token);
@@ -62,6 +68,13 @@ export class AuthService{
                 }
             }
             )
+        })
+    }
+
+    logout(){
+        console.log("logout req send.")
+        this.http.patch("http://localhost:3000/logout", {token: this.dataS.getToken()}).subscribe((data) => {
+            this.router.navigate(["/auth"]);
         })
     }
 

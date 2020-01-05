@@ -25,7 +25,6 @@ app.get("/login", (req, res) => {
     user = req.query.userName
     date = Date.now()
     key[user] = {x, date}
-    console.log(date)
     res.send({date})
 })
 
@@ -101,17 +100,18 @@ app.patch("/disableUser", (req, res) => {
 
 app.post("/join", (req, res) => {
 
-    const table = req.body.table
     const user = req.body.userName
     const intern = req.body.internship
 
-    connection.query("INSERT INTO " + table + " (userName, internship) VALUES ('" + user + "', '" + intern +"');", 
+    connection.query("INSERT INTO student (userName, internship) VALUES ('" + user + "', '" + intern +"');", 
     (error,result,field) => {
         if(error)
         {
+            console.log(error)
             res.send(error)
         }else
         {
+            console.log(result)
             res.send("Success!")
         }
     })
@@ -233,7 +233,6 @@ app.get("/tweet", (req, res) => {
 app.get("/users", (req, res) => {
 
     const token = req.query.token
-    console.log(token)
     let cond
     if(token)
     {
@@ -244,11 +243,7 @@ app.get("/users", (req, res) => {
 })
 
 app.get("/student", (req, res) => {
-    fetch("student" ,"", req, res)
-})
-
-app.get("/supervisor", (req, res) => {
-    fetch("localsupervisor" ,"", req, res)
+    fetch("student" ,"WHERE userName ='"+ req.query.user +"'", req, res)
 })
 
 app.get("/internship", (req, res) => {
@@ -308,6 +303,44 @@ app.patch("/logout", (req, res) => {
         else
         {
             res.send({success: "Logout success."})
+        }
+    })
+})
+
+app.patch("/switchCategory", (req, res) => {
+    userName = req.body.user
+    category = req.body.category
+
+    connection.query("Update user SET category='"+category+"' WHERE userName='"+ userName +"'",
+    (error, result, fields) => {
+        if(error)
+        {
+            err = error
+            res.send(error)
+        }
+        else
+        {
+            res.send(result)
+        }
+    })
+})
+
+app.get("/loadHome", (req, res) => {
+    userName = req.query.user
+
+    connection.query(
+    "SELECT * " +
+    "FROM tweet AS T, (SELECT internship FROM student WHERE userName='" + userName + "') AS S " +
+    "WHERE T.internshipID = S.internship",
+    (error, result, fields) => {
+        if(error)
+        {
+            err = error
+            res.send(error)
+        }
+        else
+        {
+            res.send(result)
         }
     })
 })

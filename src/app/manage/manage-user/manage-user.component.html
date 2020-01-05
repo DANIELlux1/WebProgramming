@@ -1,1 +1,6 @@
-<p>manage-user works!</p>
+<div *ngIf = "!isLoading">
+    <app-user-item
+     *ngFor="let user of users;"
+     [user]="user">
+     </app-user-item>
+</div>

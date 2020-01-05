@@ -7,6 +7,9 @@ import { ApiDownComponent } from './error/api-down/api-down.component';
 import { JoinInternshipComponent } from './internship/join-internship/join-internship.component';
 import { ManageUserComponent } from './manage/manage-user/manage-user.component';
 import { ManageInternshipComponent } from './manage/manage-internship/manage-internship.component';
+import { TweetPostComponent } from './tweet/tweet-post/tweet-post.component';
+import { AddUserComponent } from './manage/manage-user/add-user/add-user.component';
+import { ManageComponent } from './manage/manage.component';
 
 const appRoutes: Routes = [
     {path: "", redirectTo: "/auth", pathMatch: "full"},
@@ -15,8 +18,13 @@ const appRoutes: Routes = [
     {path: "profile", component: ProfileComponent},
     {path: "internship", component: JoinInternshipComponent},
     {path: "error", component: ApiDownComponent},
-    {path: "manageUser", component: ManageUserComponent},
-    {path: "manageInternship", component: ManageInternshipComponent}
+    {path: "manage", component: ManageComponent, children:
+    [
+        {path: "user", component: ManageUserComponent},
+        {path: "internship", component: ManageInternshipComponent}
+    ]},
+    {path: "addUser", component: AddUserComponent},
+    {path: "postTweet", component: TweetPostComponent}
     
 ]
 

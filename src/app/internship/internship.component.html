@@ -3,13 +3,13 @@
         class="col-md-10" 
         style="border: 1px solid black; padding-left: 25px;">
         <div class="row">
-            <h3>{{ internship.title }}</h3>
+            <h3>{{ internship.title }} | {{isStudent ? "(Already joined)": ""}}</h3>
         </div>
         <div class="row">
             <p>{{ internship.description }}</p>
         </div>
     </div>
     <div class="col-md-2">
-        <button class="btn btn-success">+</button>
+        <button class="btn btn-success" *ngIf="!isStudent" (click)="onJoin()">+</button>
     </div>
 </div>

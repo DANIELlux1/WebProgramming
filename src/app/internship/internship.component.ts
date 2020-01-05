@@ -12,11 +12,17 @@ export class InternshipComponent implements OnInit {
   constructor(private dataS: DataStorageService) { }
 
   @Input() internship : Internship;
+  
+  @Input() isStudent = false;
+  token: string;
 
-  ngOnInit() {}
+  ngOnInit() {
+    
+  }
 
   onJoin(){
-    this.dataS.joinInternshipV2()
+    this.isStudent = true;
+    this.dataS.joinInternship(this.dataS.getToken(), this.internship.title);
   }
 
 }

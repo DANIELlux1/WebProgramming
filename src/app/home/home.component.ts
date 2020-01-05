@@ -18,16 +18,17 @@ export class HomeComponent implements OnInit {
   loaded = false;
 
   ngOnInit() {
-    
-      /* this.sub = this.dataS.fetchTweets("", "").subscribe(dataTweet => {
-        this.tweets = dataTweet;
-        this.loaded = true;
-      }) */
+  
+    this.sub = this.dataS.tweetKeeper.subscribe(data => {
+      this.tweets = data;
+    })
+
+    this.dataS.loadHome(this.dataS.getToken())
      
   }
 
   ngOnDestroy() {
-    //this.sub.unsubscribe();
+    this.sub.unsubscribe();
   }
 
 }

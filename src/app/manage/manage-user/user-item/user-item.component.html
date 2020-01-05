@@ -1,15 +1,27 @@
-<div class="row" *ngIf="user">
-    <div 
-        class="col-md-10" 
-        style="border: 1px solid black; padding-left: 25px;">
-        <div class="row">
-            <h3>{{ user.userName }}</h3>
+<div class="row" *ngIf="user && !('root' === user.userName)" style="margin-bottom: 6px;">
+    <form #manageForm="ngForm" (ngSubmit)="onSubmit(manageForm)">
+        <div 
+            class="col-md-8" 
+            style="border: 1px solid black; padding-left: 25px;">
+            <div class="row" class="form-group">
+                <h4>{{ user.userName }} | {{user.category}}</h4>
+                <select [(ngModel)]="selectedValue" name="category"
+                 required>
+                    <option 
+                        *ngFor="let category of categories">
+                      {{category}}
+                    </option>
+                </select>
+            </div>
         </div>
-    </div>
-    <div class="col-md-2" *ngIf="user.deactivated">
-        <button class="btn btn-success">+</button>
-    </div>
-    <div class="col-md-2" *ngIf="!user.deactivated">
-        <button class="btn btn-danger">x</button>
-    </div>
+        <div class="col-md-2" *ngIf="user.deactivated" style="padding-top: 3px;">
+            <button class="btn btn-success" (click)="onDisable()">+</button>
+        </div>
+        <div class="col-md-2" *ngIf="!user.deactivated" style="padding-top: 3px;">
+            <button class="btn btn-danger" (click)="onDisable()">x</button>
+        </div>
+        <div class="col-md-2" *ngIf="!user.deactivated" style="padding-top: 3px;">
+            <button type="submit" class="btn btn-success" [disabled]="!manageForm.valid">Change</button>
+        </div>
+    </form>
 </div>
