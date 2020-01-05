@@ -50,7 +50,6 @@ export class JoinInternshipComponent implements OnInit, OnDestroy {
 
     this.sub = this.dataS.students.subscribe(data => {
       this.student = data;
-      console.log("Student in",data)
       this.dataS.fetchInternships().subscribe(intern => {
         this.internships = intern;
         this.checkIsStudent();

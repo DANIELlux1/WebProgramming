@@ -20,167 +20,6 @@ const connection = mysql.createConnection({
     database : 'twitter'
 })
 
-app.get("/login", (req, res) => {
-    x = req.query.x
-    user = req.query.userName
-    date = Date.now()
-    key[user] = {x, date}
-    res.send({date})
-})
-
-app.post("/login", async (req, res) => {
-
-    const userName = req.body.userName
-    const password = req.body.password
-    const token = jwt.sign({_id: userName}, "fakeTwitter", {expiresIn: 60*10})
-
-    connection.query("SELECT password FROM user WHERE userName = '" + userName + "'", (err, r, f) => {
-        if(err)
-        {
-            res.send(err)
-        }
-        
-        let date = key[userName].date
-        let x = key[userName].x
-        let pw = ""
-        if(r[0] != undefined && r[0].password)
-        {
-            pw = r[0].password
-        }
-        let test = shajs("sha256").update(x + pw + date).digest('hex')
-
-        if(test === password)
-        {
-            connection.query("UPDATE user SET _token = '"+ token +"'  WHERE userName='"+ userName +"' AND password='"+r[0].password+"';",
-            (error, result, field) => {
-                if(error)
-                {
-                    res.send(error)
-                }
-                else{
-                    if(result.affectedRows === 1)
-                    {
-                        if(userName === "root")
-                        {
-                            return res.send({token,special:"is Admin."})
-                        }
-                        res.send({token})
-                    }
-                    else{
-                        res.send({error: "No such credentials were found."})
-                    }
-                }
-            })
-        }else{
-            res.send({error : "There was an Error with your credentials."})
-        }
-    })
-})
-
-app.get("/test", (req, res) => {
-    res.send("Hello I work fine.")
-})
-
-app.patch("/disableUser", (req, res) => {
-
-    user = req.body.userName
-    status = req.body.deactivated
-
-    connection.query("UPDATE user SET deactivated = '" + status + "' WHERE userName = '"+ user +"';",
-     (error, result, field) => {
-        if(error)
-        {
-            res.send(error)
-        }else
-        {
-            res.send("Success!")
-        }
-    })
-})
-
-app.post("/join", (req, res) => {
-
-    const user = req.body.userName
-    const intern = req.body.internship
-
-    connection.query("INSERT INTO student (userName, internship) VALUES ('" + user + "', '" + intern +"');", 
-    (error,result,field) => {
-        if(error)
-        {
-            console.log(error)
-            res.send(error)
-        }else
-        {
-            console.log(result)
-            res.send("Success!")
-        }
-    })
-
-})
-
-app.post("/addInternship", (req, res) => {
-
-    const title = req.body.title
-    const des = req.body.description
-    const supervisor = req.body.supervisor
-
-    const values = "'" + title + "'," + "'" + des + "'," + "'" + supervisor + "'"
-
-    connection.query("INSERT INTO internship (title,description,academicSupervisor) VALUES (" +values+");",
-    (error,result,field) => {
-        if(error)
-        {
-            res.send(error)
-        }else
-        {
-            res.send("Success!")
-        }
-    })
-})
-
-app.post("/addUser", (req, res) => {
-
-    var destination = ""
-    var values = ""
-
-    if(req.body.userName)
-    {
-        destination = destination + "userName, "
-        values = values + "'" + req.body.userName + "', "
-    }
-
-    if(req.body.password)
-    {
-        destination = destination + "password, "
-        values = values + "'" + req.body.password + "', "
-    }
-
-    if(req.body.name)
-    {
-        destination = destination + "name, "
-        values = values + "'" + req.body.name + "', "
-    }
-
-    if(req.body.email)
-    {
-        destination = destination + "email"
-        values = values + "'" + req.body.email
-    }
-
-    connection.query("INSERT INTO user (" + destination + ") VALUES (" + values +"');", 
-                        (error, result, fields) => {
-                            if(error)
-                            {
-                                res.send({error: "User couldn't be added."})
-                            }
-                            else
-                            {
-                                res.send({success: "User has been added."})
-                            }
-    })
-})
-
-
 app.listen(port, () => {
     console.log("Comunication API up and running on: " + port)
 })
@@ -194,9 +33,35 @@ connection.connect((err) => {
     console.log('connected as id ' + connection.threadId);
 })
 
+fetch = (table, cond, req, res) => {
 
+    connection.query("SELECT * FROM " + table + " " + cond + ";",
+    (error, result, fields) => {
+        if(error)
+        {
+            err = error
+            res.send(error)
+        }
+        else
+        {
+            res.send(result)
+        }
+    })
+}
 
-//TO DO
+/*******************************************
+
+                GET REQUESTS
+
+********************************************/
+
+app.get("/login", (req, res) => {
+    x = req.query.x
+    user = req.query.userName
+    date = Date.now()
+    key[user] = {x, date}
+    res.send({date})
+})
 
 app.get("/tweet", (req, res) => {
 
@@ -249,9 +114,13 @@ app.get("/internship", (req, res) => {
     fetch("internship" ,"", req, res)
 })
 
-fetch = (table, cond, req, res) => {
+app.get("/loadHome", (req, res) => {
+    userName = req.query.user
 
-    connection.query("SELECT * FROM " + table + " " + cond + ";",
+    connection.query(
+    "SELECT * " +
+    "FROM tweet AS T, (SELECT internship FROM student WHERE userName='" + userName + "') AS S " +
+    "WHERE T.internshipID = S.internship",
     (error, result, fields) => {
         if(error)
         {
@@ -263,7 +132,145 @@ fetch = (table, cond, req, res) => {
             res.send(result)
         }
     })
-}
+})
+
+/*******************************************
+
+                POST REQUESTS
+
+********************************************/
+
+app.post("/login", async (req, res) => {
+
+    const userName = req.body.userName
+    const password = req.body.password
+    const token = jwt.sign({_id: userName}, "fakeTwitter", {expiresIn: 60*10})
+
+    connection.query("SELECT password FROM user WHERE userName = '" + userName + "'", (err, r, f) => {
+        if(err)
+        {
+            res.send(err)
+        }
+        
+        let date = key[userName].date
+        let x = key[userName].x
+        let pw = ""
+        if(r[0] != undefined && r[0].password)
+        {
+            pw = r[0].password
+        }
+        let test = shajs("sha256").update(x + pw + date).digest('hex')
+
+        if(test === password)
+        {
+            connection.query("UPDATE user SET _token = '"+ token +"'  WHERE userName='"+ userName +"' AND password='"+r[0].password+"';",
+            (error, result, field) => {
+                if(error)
+                {
+                    res.send(error)
+                }
+                else{
+                    if(result.affectedRows === 1)
+                    {
+                        if(userName === "root")
+                        {
+                            return res.send({token,special:"is Admin."})
+                        }
+                        res.send({token})
+                    }
+                    else{
+                        res.send({error: "No such credentials were found."})
+                    }
+                }
+            })
+        }else{
+            res.send({error : "There was an Error with your credentials."})
+        }
+    })
+})
+
+app.post("/join", (req, res) => {
+
+    const user = req.body.userName
+    const intern = req.body.internship
+
+    connection.query("INSERT INTO student (userName, internship) VALUES ('" + user + "', '" + intern +"');", 
+    (error,result,field) => {
+        if(error)
+        {
+            res.send({error: "couldnt post Message."})
+        }
+        else
+        {
+            res.send({success: "Message has been posted."})
+        }
+    })
+
+})
+
+app.post("/addInternship", (req, res) => {
+
+    const title = req.body.title
+    const des = req.body.description
+    const academic = req.body.academic
+    const local = req.body.local
+
+    const values = "'" + title + "','" + des + "','" + academic + "','" + local +"'"
+
+    connection.query("INSERT INTO internship (title,description,academicSupervisor, localSupervisor) VALUES (" +values+");",
+    (error,result,field) => {
+        if(error)
+        {
+            res.send({error: "couldnt post Internship."})
+        }
+        else
+        {
+            res.send({success: "Internship has been posted."})
+        }
+    })
+})
+
+app.post("/addUser", (req, res) => {
+
+    var destination = ""
+    var values = ""
+
+    if(req.body.userName)
+    {
+        destination = destination + "userName, "
+        values = values + "'" + req.body.userName + "', "
+    }
+
+    if(req.body.password)
+    {
+        destination = destination + "password, "
+        values = values + "'" + req.body.password + "', "
+    }
+
+    if(req.body.name)
+    {
+        destination = destination + "name, "
+        values = values + "'" + req.body.name + "', "
+    }
+
+    if(req.body.email)
+    {
+        destination = destination + "email"
+        values = values + "'" + req.body.email
+    }
+
+    connection.query("INSERT INTO user (" + destination + ") VALUES (" + values +"');", 
+                        (error, result, fields) => {
+                            if(error)
+                            {
+                                res.send({error: "User couldn't be added."})
+                            }
+                            else
+                            {
+                                res.send({success: "User has been added."})
+                            }
+    })
+})
 
 app.post("/tweet", (req, res) => {
 
@@ -293,16 +300,41 @@ app.post("/tweet", (req, res) => {
     })
 })
 
+
+/*******************************************
+
+                PATCH Communication
+
+********************************************/
+
+app.patch("/disableUser", (req, res) => {
+
+    user = req.body.userName
+    status = req.body.deactivated
+
+    connection.query("UPDATE user SET deactivated = '" + status + "' WHERE userName = '"+ user +"';",
+     (error, result, field) => {
+        if(error)
+        {
+            res.send({error: "couldnt patch User."})
+        }
+        else
+        {
+            res.send({success: "User has been updated."})
+        }
+    })
+})
+
 app.patch("/logout", (req, res) => {
     token = req.body.token
     connection.query("UPDATE user SET _token = 'null' WHERE _token = '"+ token +"';", (error,result,field) => {
         if(error)
         {
-            res.send(error)
+            res.send({error: "Logout has failed."})
         }
         else
         {
-            res.send({success: "Logout success."})
+            res.send({success: "Logout was successfull."})
         }
     })
 })
@@ -315,32 +347,11 @@ app.patch("/switchCategory", (req, res) => {
     (error, result, fields) => {
         if(error)
         {
-            err = error
-            res.send(error)
+            res.send({error: "couldnt switch category."})
         }
         else
         {
-            res.send(result)
-        }
-    })
-})
-
-app.get("/loadHome", (req, res) => {
-    userName = req.query.user
-
-    connection.query(
-    "SELECT * " +
-    "FROM tweet AS T, (SELECT internship FROM student WHERE userName='" + userName + "') AS S " +
-    "WHERE T.internshipID = S.internship",
-    (error, result, fields) => {
-        if(error)
-        {
-            err = error
-            res.send(error)
-        }
-        else
-        {
-            res.send(result)
+            res.send({success: "category has been switched."})
         }
     })
 })

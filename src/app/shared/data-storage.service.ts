@@ -163,4 +163,15 @@ export class DataStorageService{
             }
         })
     }
+
+    addInternship(title, description, academic, local){
+        this.http.post<{success,error}>("http://localhost:3000/addInternship", {title, description, academic, local}).subscribe( res => {
+            if(res.error){
+                this.error.next(res.error);
+            }
+            else{
+                this.success.next(res.success);
+            }
+        })
+    }
 }

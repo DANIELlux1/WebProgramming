@@ -10,6 +10,7 @@ import { ManageInternshipComponent } from './manage/manage-internship/manage-int
 import { TweetPostComponent } from './tweet/tweet-post/tweet-post.component';
 import { AddUserComponent } from './manage/manage-user/add-user/add-user.component';
 import { ManageComponent } from './manage/manage.component';
+import { AddInternshipComponent } from './manage/manage-internship/add-internship/add-internship.component';
 
 const appRoutes: Routes = [
     {path: "", redirectTo: "/auth", pathMatch: "full"},
@@ -23,6 +24,7 @@ const appRoutes: Routes = [
     [
         {path: "user", component: ManageUserComponent},
         {path: "internship", component: ManageInternshipComponent},
+        {path: "addInternship", component: AddInternshipComponent},
         {path: "addUser", component: AddUserComponent}
     ]},
     {path: "addUser", component: AddUserComponent},
