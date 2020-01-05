@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import { DataStorageService } from 'src/app/shared/data-storage.service';
 
 @Component({
   selector: 'app-add-user',
@@ -10,12 +11,25 @@ import { NgForm } from '@angular/forms';
 })
 export class AddUserComponent implements OnInit {
 
-  constructor(private authS: AuthService, private router: Router){}
+  constructor(private dataS: DataStorageService, private router: Router){}
 
   isLoading = false;
   loginMode = true;
 
+  success: {success}
+  error: {error}
+
   ngOnInit() {
+
+    this.dataS.error.subscribe(data => {
+      this.success = undefined;
+      this.error = data;
+    })
+
+    this.dataS.success.subscribe(data => {
+      this.success = data;
+      this.error = undefined;
+    })
   }
 
   onSubmit(form: NgForm){
@@ -27,8 +41,10 @@ export class AddUserComponent implements OnInit {
 
     this.isLoading = true;
     const user = form.value.user;
-    const pw = form.value.password;
+    const password = form.value.password;
+    const email = form.value.email;
+    const name = form.value.name;
 
-    this.authS.login(user, pw)
+    this.dataS.addUser(user, password, email, name);
   }
 }

@@ -1,1 +1,7 @@
-<p>manage-internship works!</p>
+<div *ngIf = "!isLoading">
+    <app-internship-item
+     *ngFor="let internship of internships;"
+     [internship]="internship"
+     [supervisors]="supervisors">
+     </app-internship-item>
+</div>

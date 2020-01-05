@@ -17,11 +17,13 @@ const appRoutes: Routes = [
     {path: "home", component: HomeComponent},
     {path: "profile", component: ProfileComponent},
     {path: "internship", component: JoinInternshipComponent},
+    {path: "post", component: TweetPostComponent},
     {path: "error", component: ApiDownComponent},
     {path: "manage", component: ManageComponent, children:
     [
         {path: "user", component: ManageUserComponent},
-        {path: "internship", component: ManageInternshipComponent}
+        {path: "internship", component: ManageInternshipComponent},
+        {path: "addUser", component: AddUserComponent}
     ]},
     {path: "addUser", component: AddUserComponent},
     {path: "postTweet", component: TweetPostComponent}

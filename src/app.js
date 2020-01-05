@@ -171,12 +171,11 @@ app.post("/addUser", (req, res) => {
                         (error, result, fields) => {
                             if(error)
                             {
-                                err = error
-                                res.send(error)
+                                res.send({error: "User couldn't be added."})
                             }
                             else
                             {
-                                res.send(result)
+                                res.send({success: "User has been added."})
                             }
     })
 })
@@ -267,6 +266,8 @@ fetch = (table, cond, req, res) => {
 }
 
 app.post("/tweet", (req, res) => {
+
+    console.log("inside Tweet.")
     
     user = req.body.userName
     intern = req.body.internship
@@ -283,12 +284,11 @@ app.post("/tweet", (req, res) => {
     (error, result, fields) => {
         if(error)
         {
-            err = error
-            res.send(error)
+            res.send({error: "couldnt post Message."})
         }
         else
         {
-            res.send(result)
+            res.send({success: "Message has been posted."})
         }
     })
 })

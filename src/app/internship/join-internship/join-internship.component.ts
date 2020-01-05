@@ -1,19 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Internship } from '../internship.model';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-join-internship',
   templateUrl: './join-internship.component.html',
   styleUrls: ['./join-internship.component.css']
 })
-export class JoinInternshipComponent implements OnInit {
+export class JoinInternshipComponent implements OnInit, OnDestroy {
+  
+  
 
   constructor(private dataS: DataStorageService) { }
 
   internships : Internship[];
   isLoading = false;
   token: string;
+
+  sub: Subscription;
 
   student: {internship, userName}[]
 
@@ -43,7 +48,7 @@ export class JoinInternshipComponent implements OnInit {
   ngOnInit() {
     this.token = this.dataS.getToken();
 
-    this.dataS.students.subscribe(data => {
+    this.sub = this.dataS.students.subscribe(data => {
       this.student = data;
       console.log("Student in",data)
       this.dataS.fetchInternships().subscribe(intern => {
@@ -55,9 +60,12 @@ export class JoinInternshipComponent implements OnInit {
 
     this.isLoading = true;
     this.dataS.fetchStudent(this.token)
-    
 
+  }
 
+  ngOnDestroy(){
+    this.sub.unsubscribe();
+    this.internships = undefined;
   }
 
 }

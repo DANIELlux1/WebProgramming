@@ -16,6 +16,9 @@ export class DataStorageService{
     public userInfo= new Subject<User>();
     public students= new Subject<{userName, internship}[]>();
 
+    public error= new Subject<{error}>();
+    public success= new Subject<{success}>();
+
     setToken(token: string){
         this.token = token;
     }
@@ -122,5 +125,42 @@ export class DataStorageService{
 
     switchUserCategory(user, category){
         this.http.patch("http://localhost:3000/switchCategory", {user, category}).subscribe();
+    }
+
+    addUser(userName, password, email, name){
+        this.http.post<{error, success}>("http://localhost:3000/addUser", {userName, password, email, name}).subscribe( (data) => {
+            if(data.error)
+            {
+                this.error.next(data.error);
+            }
+            else
+            {
+                this.success.next(data.success);
+            }
+        } );
+    }
+
+    postMessage(token, message, internship){
+
+        console.log("Inside postMessage");
+
+        this.http.get<User[]>("http://localhost:3000/users?token=" + token)
+        .subscribe(data => {
+            console.log(data);
+            if(data[0])
+            {
+                console.log("Inside post Tweet");
+                this.http.post<{success, error}>("http://localhost:3000/tweet", {userName: data[0].userName, message, internship}).subscribe( (res) => {
+                    if(res.error){
+                        this.error.next(res.error);
+                        console.log("Oopsie doopsy", res.error);
+                    }
+                    else{
+                        this.success.next(res.success);
+                        console.log(res.success);
+                    }
+                })
+            }
+        })
     }
 }
